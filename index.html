@@ -1,371 +1,390 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xariful Income Zone</title>
+    <title>Task Income Bot - Premium Dashboard</title>
+    <!-- Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- FontAwesome for Binance & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-color: #0d1117;
-            --card-bg: rgba(22, 27, 34, 0.95);
-            --accent-primary: #0088cc;
-            --accent-secondary: #22c55e;
-            --text-main: #f0f6fc;
-            --text-muted: #8b949e;
-            --border-color: #30363d;
+            --card-bg: rgba(22, 27, 34, 0.85);
+            --text-color: #ffffff;
+            --accent-glow: linear-gradient(45deg, #00ff87, #60efff, #ff007f, #7928ca);
+            --border-color: rgba(255, 255, 255, 0.1);
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
             background-color: var(--bg-color);
-            background-image: radial-gradient(circle at top right, #1f293d 0%, #0d1117 70%);
-            color: var(--text-main);
+            color: var(--text-color);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 12px;
             overflow-x: hidden;
+            padding: 15px;
         }
 
-        /* ফোর্স জয়েন মোডাল বা পপআপ স্টাইল */
-        #forceJoinModal {
+        /* Background Animated Glow */
+        .bg-animation {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(13, 17, 23, 0.95);
-            backdrop-filter: blur(12px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 20px;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(121, 40, 202, 0.15) 0%, rgba(13, 17, 23, 1) 70%);
+            z-index: -1;
+            animation: rotateBg 15s linear infinite;
         }
 
-        .modal-card {
+        @keyframes rotateBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
             background: var(--card-bg);
-            border: 1px solid var(--border-color);
             border-radius: 24px;
             padding: 25px;
-            width: 100%;
-            max-width: 350px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            animation: modalPop 0.3s ease-in-out;
-        }
-
-        @keyframes modalPop {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-icon {
-            font-size: 45px;
-            color: #38bdf8;
-            margin-bottom: 15px;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .modal-desc {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 400px;
-            padding-bottom: 90px;
-            display: none; /* ভেরিফাই না হওয়া পর্যন্ত মূল অ্যাপ লুকানো থাকবে */
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card-desc {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-            line-height: 1.4;
-        }
-
-        .balance-box {
-            text-align: center;
-            padding: 10px 0;
-        }
-
-        .balance-amount {
-            font-size: 32px;
-            font-weight: 700;
-            color: #38bdf8;
-            margin-top: 5px;
-        }
-
-        .input-group {
+            border: 2px solid transparent;
+            background-clip: padding-box;
             position: relative;
-            margin-bottom: 12px;
         }
 
-        .form-input {
+        /* Glowing Border Animation */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: var(--accent-glow);
+            background-size: 300% 300%;
+            z-index: -1;
+            border-radius: 26px;
+            animation: glowingBorder 6s ease infinite;
+        }
+
+        @keyframes glowingBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Profile Header */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .avatar-box {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            padding: 3px;
+            background: var(--accent-glow);
+            animation: glowingBorder 4s linear infinite;
+        }
+
+        .avatar-box img {
             width: 100%;
-            padding: 12px 16px;
-            background: #161b22;
-            border: 1px solid var(--border-color);
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-header h1 {
+            font-size: 22px;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, #00ff87, #60efff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .profile-header p {
+            font-size: 13px;
+            color: #8b949e;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 12px;
-            color: white;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
+            padding: 5px;
+            margin-bottom: 20px;
         }
 
-        .form-input:focus {
-            border-color: var(--accent-primary);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
+        .tab-btn {
+            flex: 1;
+            background: none;
             border: none;
-            border-radius: 12px;
+            color: #8b949e;
+            padding: 10px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            margin-bottom: 10px;
+            border-radius: 8px;
+            transition: 0.3s;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #0088cc, #00a2ff);
-            color: white;
-            box-shadow: 0 4px 14px rgba(0, 136, 204, 0.4);
+        .tab-btn.active {
+            background: linear-gradient(135deg, #00ff87, #60efff);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(0, 255, 135, 0.4);
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
-        }
-
-        .btn:active {
-            transform: scale(0.97);
-        }
-
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(13, 17, 23, 0.9);
-            backdrop-filter: blur(16px);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            z-index: 1000;
-        }
-
-        .nav-item {
-            color: var(--text-muted);
-            text-align: center;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 500;
-            flex: 1;
-            transition: color 0.2s;
-        }
-
-        .nav-item.active {
-            color: #38bdf8;
-        }
-
-        .nav-item i {
-            font-size: 18px;
-            display: block;
-            margin-bottom: 3px;
-        }
-
-        .tab-content {
+        /* Content Sections */
+        .section {
             display: none;
         }
 
-        .tab-content.active {
+        .section.active {
             display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Stats Card */
+        .stats-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .stats-card h3 {
+            font-size: 14px;
+            color: #8b949e;
+            margin-bottom: 5px;
+        }
+
+        .stats-card .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff87;
+        }
+
+        /* Form Inputs & Buttons */
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #c9d1d9;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            color: #f3ba2f; /* Binance Yellow */
+            font-size: 18px;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 15px 12px 45px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-wrapper input:focus {
+            border-color: #f3ba2f;
+            box-shadow: 0 0 10px rgba(243, 186, 47, 0.3);
+        }
+
+        .action-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #f3ba2f, #ff8c00);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(243, 186, 47, 0.4);
+            margin-top: 10px;
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Referral Link Box */
+        .ref-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .ref-box span {
+            font-size: 13px;
+            color: #8b949e;
+            word-break: break-all;
+            margin-right: 10px;
+        }
+
+        .copy-btn {
+            background: #238636;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <!-- ফোর্স জয়েন করার মেইন বক্স (বাধ্যতামূলক) -->
-    <div id="forceJoinModal">
-        <div class="modal-card">
-            <div class="modal-icon">
-                <i class="fas fa-bullhorn"></i>
-            </div>
-            <div class="modal-title">চ্যানেল সাবস্ক্রাইব করুন</div>
-            <div class="modal-desc">বট বা মিনি অ্যাপটি সম্পূর্ণ ব্যবহারের জন্য আমাদের অফিশিয়াল টেলিগ্রাম চ্যানেলে জয়েন করা বাধ্যতামূলক।</div>
-            
-            <button class="btn btn-primary" onclick="joinChannel()">
-                <i class="fab fa-telegram-plane"></i> চ্যানেলে জয়েন করুন
-            </button>
-            <button class="btn btn-success" onclick="verifyJoin()">
-                <i class="fas fa-check-circle"></i> জয়েন করেছি, ভেরিফাই করুন
-            </button>
-        </div>
-    </div>
+    <div class="bg-animation"></div>
 
-    <!-- মূল মিনি অ্যাপ কন্টেইনার -->
-    <div class="app-container" id="appContainer">
-        
-        <!-- HOME TAB -->
-        <div id="homeTab" class="tab-content active">
-            <div class="card">
-                <div class="card-title"><i class="fas fa-wallet" style="color: #38bdf8;"></i> মূল ব্যালেন্স</div>
-                <div class="balance-box">
-                    <div class="card-desc" style="margin-bottom: 0;">আপনার বর্তমান আয়</div>
-                    <div class="balance-amount">৳ <span id="userBalance">0.00</span></div>
-                </div>
+    <div class="container">
+        <!-- Header Profile -->
+        <div class="profile-header">
+            <div class="avatar-box">
+                <img src="https://i.imgur.com/8Q9W4Xv.png" alt="CEO Logo" id="userAvatar">
             </div>
-
-            <div class="card">
-                <div class="card-title"><i class="fas fa-users" style="color: #10b981;"></i> রেফার অ্যান্ড আর্ন</div>
-                <div class="card-desc">প্রতি সফল রেফারে এডমিন প্যানেল থেকে পাবেন নির্দিষ্ট বোনাস! বন্ধুদের সাথে শেয়ার করুন।</div>
-                
-                <div class="input-group">
-                    <input type="text" class="form-input" id="referLink" value="https://t.me/alincomebot?start=ref12345" readonly>
-                </div>
-                <button class="btn btn-primary" onclick="copyReferLink()">
-                    <i class="fas fa-copy"></i> রেফার লিংক কপি করুন
-                </button>
-            </div>
+            <h1 id="userName">ARIFUL-CEO</h1>
+            <p>Task Income & Crypto Ecosystem</p>
         </div>
 
-        <!-- PROFILE / WITHDRAW TAB -->
-        <div id="profileTab" class="tab-content">
-            <div class="card">
-                <div class="card-title"><i class="fas fa-money-check-dollar" style="color: #f59e0b;"></i> বাইনান্স উইথড্র</div>
-                <div class="card-desc">আপনার ব্যালেন্স থেকে সরাসরি বাইনান্স অ্যাকাউন্টে টাকা পেমেন্ট নিন।</div>
-                
-                <div class="input-group">
-                    <input type="text" class="form-input" id="binanceEmail" placeholder="বাইনান্স Pay ID / Email দিন">
-                </div>
-                <div class="input-group">
-                    <input type="number" class="form-input" id="withdrawAmount" placeholder="টাকার পরিমাণ (সর্বনিম্ন ১০০ ৳)">
-                </div>
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('home', this)"><i class="fa-solid fa-house"></i> Home</button>
+            <button class="tab-btn" onclick="switchTab('withdraw', this)"><i class="fa-solid fa-wallet"></i> Withdraw</button>
+            <button class="tab-btn" onclick="switchTab('referral', this)"><i class="fa-solid fa-users"></i> Referral</button>
+        </div>
 
-                <button class="btn btn-success" onclick="requestWithdraw()">
-                    <i class="fas fa-paper-plane"></i> উইথড্র রিকোয়েস্ট পাঠান
-                </button>
+        <!-- Home Section -->
+        <div id="home" class="section active">
+            <div class="stats-card">
+                <h3>Total Balance</h3>
+                <div class="amount" id="totalBalance">$125.50</div>
             </div>
+            <div class="stats-card">
+                <h3>Completed Tasks</h3>
+                <div class="amount" style="color: #60efff;" id="taskCount">42</div>
+            </div>
+            <button class="action-btn" style="background: linear-gradient(135deg, #00ff87, #60efff); color: #000;" onclick="switchTab('withdraw', null)">Withdraw Funds Now</button>
         </div>
 
-    </div>
-
-    <!-- নেভিগেশন বার -->
-    <div class="nav-bar" id="bottomNav" style="display: none;">
-        <div class="nav-item active" onclick="switchTab('homeTab', this)">
-            <i class="fas fa-home"></i> হোম
+        <!-- Withdraw Section (Binance UID) -->
+        <div id="withdraw" class="section">
+            <div class="stats-card">
+                <h3>Available for Withdraw</h3>
+                <div class="amount" id="withdrawBalance">$125.50</div>
+            </div>
+            <div class="input-group">
+                <label>Enter Your Binance UID</label>
+                <div class="input-wrapper">
+                    <i class="fa-brands fa-bitcoin"></i> <!-- Binance Theme Icon -->
+                    <input type="number" id="binanceUid" placeholder="e.g., 893281027">
+                </div>
+            </div>
+            <button class="action-btn" onclick="requestWithdraw()">Submit Withdrawal</button>
         </div>
-        <div class="nav-item" onclick="switchTab('profileTab', this)">
-            <i class="fas fa-user-circle"></i> প্রোফাইল / উইথড্র
+
+        <!-- Referral Section -->
+        <div id="referral" class="section">
+            <div class="stats-card">
+                <h3>Referral Balance (Admin Controlled)</h3>
+                <div class="amount" id="refBalance">$15.00</div>
+            </div>
+            <div class="input-group">
+                <label>Your Invite Link</label>
+                <div class="ref-box">
+                    <span id="refLink">https://t.me/Task_iincome_BOT?start=ref12345</span>
+                    <button class="copy-btn" onclick="copyRef()">Copy</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand();
-
-        // আপনার চ্যানেলের লিংক
-        const channelUrl = "https://t.me/alincomebot";
-
-        function joinChannel() {
-            // টেলিগ্রামের মাধ্যমে চ্যানেল ওপেন করা
-            window.open(channelUrl, '_blank');
-        }
-
-        function verifyJoin() {
-            // ইউজারকে অ্যালার্ট দিয়ে চেক করার সিমুলেশন (যেহেতু ব্রাউজারে রিয়েল-টাইম টেলিগ্রাম এপিআই সরাসরি কল করা যায় না)
-            let userConfirmed = confirm("আপনি কি সত্যিই আমাদের চ্যানেলে জয়েন করেছেন?");
-            if (userConfirmed) {
-                // ভেরিফাই সফল হলে পপআপ সরিয়ে মূল অ্যাপ ও নেভিগেশন দেখিয়ে দেওয়া
-                document.getElementById('forceJoinModal').style.display = 'none';
-                document.getElementById('appContainer').style.display = 'block';
-                document.getElementById('bottomNav').style.display = 'flex';
-                alert("স্বাগতম! আপনার সাবস্ক্রিপশন সফলভাবে ভেরিফাই হয়েছে।");
-            } else {
-                alert("❌ দয়া করে আগে চ্যানেলে জয়েন করুন, তারপর ভেরিফাই বাটনে ক্লিক করুন!");
-            }
-        }
-
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        // Tab Switcher Logic
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
-            element.classList.add('active');
+            if(btn) {
+                btn.classList.add('active');
+            } else {
+                // If triggered via button click, highlight matching tab
+                const tabs = document.querySelectorAll('.tab-btn');
+                if(tabId === 'home') tabs[0].classList.add('active');
+                if(tabId === 'withdraw') tabs[1].classList.add('active');
+                if(tabId === 'referral') tabs[2].classList.add('active');
+            }
         }
 
-        function copyReferLink() {
-            const referInput = document.getElementById("referLink");
-            referInput.select();
-            navigator.clipboard.writeText(referInput.value);
-            alert("রেফার লিংক সফলভাবে কপি করা হয়েছে!");
-        }
-
+        // Withdraw Action
         function requestWithdraw() {
-            const email = document.getElementById('binanceEmail').value.trim();
-            const amount = document.getElementById('withdrawAmount').value.trim();
-
-            if (!email || !amount) {
-                alert("দয়া করে বাইনান্স আইডি এবং টাকার পরিমাণ সঠিকভাবে লিখুন।");
+            const uid = document.getElementById('binanceUid').value;
+            if(!uid || uid.length < 5) {
+                alert('দয়া করে আপনার সঠিক Binance UID লিখুন!');
                 return;
             }
+            alert('উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে! Binance UID: ' + uid);
+        }
 
-            if (amount < 100) {
-                alert("সর্বনিম্ন উইথড্র পরিমাণ ১০০ টাকা।");
-                return;
-            }
+        // Copy Referral Link
+        function copyRef() {
+            const link = document.getElementById('refLink').innerText;
+            navigator.clipboard.writeText(link);
+            alert('রেফারেল লিংক কপি করা হয়েছে!');
+        }
 
-            alert("আপনার বাইনান্স উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!");
-            document.getElementById('binanceEmail').value = '';
-            document.getElementById('withdrawAmount').value = '';
+        // Telegram WebApp Init
+        window.Telegram.WebApp.ready();
+        const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
+        if(tgUser && tgUser.first_name) {
+            document.getElementById('userName').innerText = tgUser.first_name + "-CEO";
         }
     </script>
 </body>
