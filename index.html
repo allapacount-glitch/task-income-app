@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xariful Income Zone</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: rgba(22, 27, 34, 0.85);
+            --accent-primary: #0088cc;
+            --accent-secondary: #22c55e;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --border-color: #30363d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at top right, #1f293d 0%, #0d1117 70%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            overflow-x: hidden;
+        }
+
+        /* Force Join Modal with Smooth Animation */
+        #forceJoinModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(16px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 30px 20px;
+            text-align: center;
+            max-width: 340px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-8px);}
+            60% {transform: translateY(-4px);}
+        }
+
+        /* App Container */
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            padding-bottom: 90px;
+            display: none;
+            animation: appFadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes appFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        /* Balance Display */
+        .balance-box {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-top: 5px;
+        }
+
+        /* Form Controls */
+        .input-group {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #161b22;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0088cc, #00a2ff);
+            color: white;
+            box-shadow: 0 4px 14px rgba(0, 136, 204, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(13, 17, 23, 0.9);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            color: var(--text-muted);
+            text-align: center;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 500;
+            flex: 1;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active {
+            color: #38bdf8;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Force Join Modal -->
+    <div id="forceJoinModal">
+        <div class="modal-card">
+            <div class="modal-icon"><i class="fas fa-bullhorn"></i></div>
+            <h2 style="font-size: 18px; margin-bottom: 10px;">চ্যানেল সাবস্ক্রাইব করুন</h2>
+            <p class="card-desc">বটটি সম্পূর্ণ ব্যবহারের জন্য আমাদের অফিশিয়াল টেলিগ্রাম চ্যানেলে জয়েন করা বাধ্যতামূলক।</p>
+            
+            <a href="https://t.me/your_channel_link" target="_blank" class="btn btn-primary" style="margin-bottom: 10px;">
+                <i class="fab fa-telegram-plane"></i> চ্যানেলে জয়েন করুন
+            </a>
+            <button class="btn btn-success" onclick="verifyJoin()">
+                <i class="fas fa-check-circle"></i> জয়েন করেছি, ভেরিফাই করুন
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App Interface -->
+    <div class="app-container" id="appContainer">
+        
+        <!-- HOME TAB -->
+        <div id="homeTab" class="tab-content active">
+            <!-- Balance Card -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-wallet" style="color: #38bdf8;"></i> মূল ব্যালেন্স</div>
+                <div class="balance-box">
+                    <div class="card-desc" style="margin-bottom: 0;">আপনার বর্তমান আয়</div>
+                    <div class="balance-amount">৳ <span id="userBalance">0.00</span></div>
+                </div>
+            </div>
+
+            <!-- Referral Card -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-users" style="color: #10b981;"></i> রেফার অ্যান্ড আর্ন</div>
+                <div class="card-desc">প্রতি সফল রেফারে এডমিন প্যানেল থেকে পাবেন নির্দিষ্ট বোনাস (যেমন: ১০ ৳)! বন্ধুদের সাথে শেয়ার করুন।</div>
+                
+                <div class="input-group">
+                    <input type="text" class="form-input" id="referLink" value="https://t.me/your_bot?start=ref12345" readonly>
+                </div>
+                <button class="btn btn-primary" onclick="copyReferLink()">
+                    <i class="fas fa-copy"></i> রেফার লিংক কপি করুন
+                </button>
+            </div>
+        </div>
+
+        <!-- PROFILE / WITHDRAW TAB -->
+        <div id="profileTab" class="tab-content">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-money-check-dollar" style="color: #f59e0b;"></i> বাইনান্স উইথড্র</div>
+                <div class="card-desc">আপনার ব্যালেন্স থেকে সরাসরি বাইনান্স অ্যাকাউন্টে টাকা পেমেন্ট নিন। এডমিন দ্রুত অনুমোদন করে দেবেন।</div>
+                
+                <div class="input-group">
+                    <input type="text" class="form-input" id="binanceEmail" placeholder="বাইনান্স Pay ID / Email দিন">
+                </div>
+                <div class="input-group">
+                    <input type="number" class="form-input" id="withdrawAmount" placeholder="টাকার পরিমাণ (সর্বনিম্ন ১০০ ৳)">
+                </div>
+
+                <button class="btn btn-success" onclick="requestWithdraw()">
+                    <i class="fas fa-paper-plane"></i> উইথড্র রিকোয়েস্ট পাঠান
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="nav-bar" id="bottomNav" style="display: none;">
+        <div class="nav-item active" onclick="switchTab('homeTab', this)">
+            <i class="fas fa-home"></i> হোম
+        </div>
+        <div class="nav-item" onclick="switchTab('profileTab', this)">
+            <i class="fas fa-user-circle"></i> প্রোফাইল / উইথড্র
+        </div>
+    </div>
+
+    <script>
+        // Telegram Web App initialization if available
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        function verifyJoin() {
+            // এখানে চাইলে ব্যাকএন্ডে টেলিগ্রাম API দিয়ে ইউজার জয়েন করেছে কিনা চেক করা যায়
+            document.getElementById('forceJoinModal').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+            document.getElementById('bottomNav').style.display = 'flex';
+        }
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        function copyReferLink() {
+            const referInput = document.getElementById("referLink");
+            referInput.select();
+            navigator.clipboard.writeText(referInput.value);
+            alert("রেফার লিংক সফলভাবে কপি করা হয়েছে!");
+        }
+
+        function requestWithdraw() {
+            const email = document.getElementById('binanceEmail').value.trim();
+            const amount = document.getElementById('withdrawAmount').value.trim();
+
+            if (!email || !amount) {
+                alert("দয়া করে বাইনান্স আইডি এবং টাকার পরিমাণ সঠিকভাবে লিখুন।");
+                return;
+            }
+
+            if (amount < 100) {
+                alert("সর্বনিম্ন উইথড্র পরিমাণ ১০০ টাকা।");
+                return;
+            }
+
+            alert("আপনার বাইনান্স উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে! এডমিন প্যানেল যাচাই করে পেমেন্ট পাঠিয়ে দেবে।");
+            document.getElementById('binanceEmail').value = '';
+            document.getElementById('withdrawAmount').value = '';
+        }
+    </script>
+</body>
+</html>
