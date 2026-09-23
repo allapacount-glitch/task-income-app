@@ -9,7 +9,7 @@
     <style>
         :root {
             --bg-color: #0d1117;
-            --card-bg: rgba(22, 27, 34, 0.85);
+            --card-bg: rgba(22, 27, 34, 0.95);
             --accent-primary: #0088cc;
             --accent-secondary: #22c55e;
             --text-main: #f0f6fc;
@@ -36,16 +36,63 @@
             overflow-x: hidden;
         }
 
+        /* ফোর্স জয়েন মোডাল বা পপআপ স্টাইল */
+        #forceJoinModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 25px;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: modalPop 0.3s ease-in-out;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon {
+            font-size: 45px;
+            color: #38bdf8;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .modal-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
         .app-container {
             width: 100%;
             max-width: 400px;
             padding-bottom: 90px;
-            animation: appFadeIn 0.4s ease-in-out;
-        }
-
-        @keyframes appFadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            display: none; /* ভেরিফাই না হওয়া পর্যন্ত মূল অ্যাপ লুকানো থাকবে */
         }
 
         .card {
@@ -122,6 +169,7 @@
             gap: 8px;
             transition: all 0.2s ease;
             text-decoration: none;
+            margin-bottom: 10px;
         }
 
         .btn-primary {
@@ -185,6 +233,25 @@
 </head>
 <body>
 
+    <!-- ফোর্স জয়েন করার মেইন বক্স (বাধ্যতামূলক) -->
+    <div id="forceJoinModal">
+        <div class="modal-card">
+            <div class="modal-icon">
+                <i class="fas fa-bullhorn"></i>
+            </div>
+            <div class="modal-title">চ্যানেল সাবস্ক্রাইব করুন</div>
+            <div class="modal-desc">বট বা মিনি অ্যাপটি সম্পূর্ণ ব্যবহারের জন্য আমাদের অফিশিয়াল টেলিগ্রাম চ্যানেলে জয়েন করা বাধ্যতামূলক।</div>
+            
+            <button class="btn btn-primary" onclick="joinChannel()">
+                <i class="fab fa-telegram-plane"></i> চ্যানেলে জয়েন করুন
+            </button>
+            <button class="btn btn-success" onclick="verifyJoin()">
+                <i class="fas fa-check-circle"></i> জয়েন করেছি, ভেরিফাই করুন
+            </button>
+        </div>
+    </div>
+
+    <!-- মূল মিনি অ্যাপ কন্টেইনার -->
     <div class="app-container" id="appContainer">
         
         <!-- HOME TAB -->
@@ -231,7 +298,8 @@
 
     </div>
 
-    <div class="nav-bar" id="bottomNav">
+    <!-- নেভিগেশন বার -->
+    <div class="nav-bar" id="bottomNav" style="display: none;">
         <div class="nav-item active" onclick="switchTab('homeTab', this)">
             <i class="fas fa-home"></i> হোম
         </div>
@@ -243,6 +311,28 @@
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
+
+        // আপনার চ্যানেলের লিংক
+        const channelUrl = "https://t.me/alincomebot";
+
+        function joinChannel() {
+            // টেলিগ্রামের মাধ্যমে চ্যানেল ওপেন করা
+            window.open(channelUrl, '_blank');
+        }
+
+        function verifyJoin() {
+            // ইউজারকে অ্যালার্ট দিয়ে চেক করার সিমুলেশন (যেহেতু ব্রাউজারে রিয়েল-টাইম টেলিগ্রাম এপিআই সরাসরি কল করা যায় না)
+            let userConfirmed = confirm("আপনি কি সত্যিই আমাদের চ্যানেলে জয়েন করেছেন?");
+            if (userConfirmed) {
+                // ভেরিফাই সফল হলে পপআপ সরিয়ে মূল অ্যাপ ও নেভিগেশন দেখিয়ে দেওয়া
+                document.getElementById('forceJoinModal').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'block';
+                document.getElementById('bottomNav').style.display = 'flex';
+                alert("স্বাগতম! আপনার সাবস্ক্রিপশন সফলভাবে ভেরিফাই হয়েছে।");
+            } else {
+                alert("❌ দয়া করে আগে চ্যানেলে জয়েন করুন, তারপর ভেরিফাই বাটনে ক্লিক করুন!");
+            }
+        }
 
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
