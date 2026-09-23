@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Income Bot - Premium Dashboard</title>
-    <!-- Telegram Web App SDK -->
+    <title>Task Income Bot - Premium UI</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- FontAwesome for Binance & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0d1117;
-            --card-bg: rgba(22, 27, 34, 0.85);
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 24, 39, 0.75);
             --text-color: #ffffff;
-            --accent-glow: linear-gradient(45deg, #00ff87, #60efff, #ff007f, #7928ca);
-            --border-color: rgba(255, 255, 255, 0.1);
+            --border-glow: linear-gradient(135deg, #00ff87, #60efff, #ff007f);
         }
 
         * {
@@ -31,102 +28,99 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
             padding: 15px;
+            overflow-x: hidden;
         }
 
-        /* Background Animated Glow */
-        .bg-animation {
+        /* Live Animated Background Glow */
+        .bg-glow {
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(121, 40, 202, 0.15) 0%, rgba(13, 17, 23, 1) 70%);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(96, 239, 255, 0.15), rgba(0, 255, 135, 0.05), transparent 70%);
             z-index: -1;
-            animation: rotateBg 15s linear infinite;
+            animation: pulseGlow 6s ease-in-out infinite alternate;
         }
 
-        @keyframes rotateBg {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.15); opacity: 1; }
         }
 
-        .container {
+        .main-card {
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             background: var(--card-bg);
-            border-radius: 24px;
+            border-radius: 30px;
             padding: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(16px);
             border: 2px solid transparent;
             background-clip: padding-box;
             position: relative;
         }
 
-        /* Glowing Border Animation */
-        .container::before {
+        /* Glowing Animated Border matching your screenshot */
+        .main-card::before {
             content: '';
             position: absolute;
             top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: var(--accent-glow);
-            background-size: 300% 300%;
+            background: var(--border-glow);
             z-index: -1;
-            border-radius: 26px;
-            animation: glowingBorder 6s ease infinite;
+            border-radius: 32px;
+            background-size: 300% 300%;
+            animation: borderAnimation 5s ease infinite;
         }
 
-        @keyframes glowingBorder {
+        @keyframes borderAnimation {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* Profile Header */
-        .profile-header {
+        /* Profile & Avatar */
+        .profile-section {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
-        .avatar-box {
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 15px;
+        .avatar-container {
+            width: 85px;
+            height: 85px;
+            margin: 0 auto 12px;
             border-radius: 50%;
             padding: 3px;
-            background: var(--accent-glow);
-            animation: glowingBorder 4s linear infinite;
+            background: var(--border-glow);
+            animation: borderAnimation 4s linear infinite;
         }
 
-        .avatar-box img {
+        .avatar-container img {
             width: 100%;
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
         }
 
-        .profile-header h1 {
-            font-size: 22px;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
+        .profile-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
             background: linear-gradient(90deg, #00ff87, #60efff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
         }
 
-        .profile-header p {
-            font-size: 13px;
-            color: #8b949e;
+        .profile-section p {
+            font-size: 12px;
+            color: #9ca3af;
         }
 
-        /* Navigation Tabs */
+        /* Navigation Tabs (Home, Withdraw, Referral) */
         .nav-tabs {
             display: flex;
-            justify-content: space-between;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            padding: 5px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 14px;
+            padding: 4px;
             margin-bottom: 20px;
         }
 
@@ -134,13 +128,14 @@
             flex: 1;
             background: none;
             border: none;
-            color: #8b949e;
-            padding: 10px;
-            font-size: 14px;
+            color: #9ca3af;
+            padding: 10px 0;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 10px;
             transition: 0.3s;
+            text-align: center;
         }
 
         .tab-btn.active {
@@ -149,147 +144,142 @@
             box-shadow: 0 4px 15px rgba(0, 255, 135, 0.4);
         }
 
-        /* Content Sections */
-        .section {
+        .tab-content {
             display: none;
         }
 
-        .section.active {
+        .tab-content.active {
             display: block;
-            animation: fadeIn 0.4s ease-in-out;
+            animation: fadeIn 0.3s ease-in-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Stats Card */
-        .stats-card {
+        /* Action Buttons (Like your bio buttons) */
+        .link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 15px;
-            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 14px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 12px;
+            transition: 0.3s;
         }
 
-        .stats-card h3 {
-            font-size: 14px;
-            color: #8b949e;
+        .link-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #60efff;
+            transform: translateY(-2px);
+        }
+
+        /* Stats & Withdraw Box */
+        .stats-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .stats-box h4 {
+            font-size: 12px;
+            color: #9ca3af;
             margin-bottom: 5px;
         }
 
-        .stats-card .amount {
-            font-size: 24px;
+        .stats-box .val {
+            font-size: 22px;
             font-weight: bold;
             color: #00ff87;
         }
 
-        /* Form Inputs & Buttons */
+        /* Input Field for Binance UID */
         .input-group {
             margin-bottom: 15px;
         }
 
         .input-group label {
             display: block;
-            font-size: 13px;
-            margin-bottom: 8px;
-            color: #c9d1d9;
+            font-size: 12px;
+            color: #d1d5db;
+            margin-bottom: 6px;
         }
 
-        .input-wrapper {
+        .input-field-wrapper {
             position: relative;
             display: flex;
             align-items: center;
         }
 
-        .input-wrapper i {
+        /* Binance Logo / Icon inside input */
+        .input-field-wrapper i {
             position: absolute;
             left: 15px;
             color: #f3ba2f; /* Binance Yellow */
-            font-size: 18px;
+            font-size: 20px;
         }
 
-        .input-wrapper input {
+        .input-field-wrapper input {
             width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            padding: 12px 15px 12px 45px;
+            padding: 12px 15px 12px 48px;
             color: #fff;
             font-size: 15px;
             outline: none;
             transition: 0.3s;
         }
 
-        .input-wrapper input:focus {
+        .input-field-wrapper input:focus {
             border-color: #f3ba2f;
             box-shadow: 0 0 10px rgba(243, 186, 47, 0.3);
         }
 
-        .action-btn {
+        .primary-btn {
             width: 100%;
-            background: linear-gradient(135deg, #f3ba2f, #ff8c00);
+            background: linear-gradient(135deg, #00ff87, #60efff);
             border: none;
             border-radius: 12px;
             padding: 14px;
             color: #000;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(243, 186, 47, 0.4);
-            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0, 255, 135, 0.3);
         }
 
-        .action-btn:hover {
-            opacity: 0.9;
+        .primary-btn:hover {
+            opacity: 0.95;
             transform: translateY(-2px);
-        }
-
-        /* Referral Link Box */
-        .ref-box {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .ref-box span {
-            font-size: 13px;
-            color: #8b949e;
-            word-break: break-all;
-            margin-right: 10px;
-        }
-
-        .copy-btn {
-            background: #238636;
-            color: #fff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-animation"></div>
+    <div class="bg-glow"></div>
 
-    <div class="container">
-        <!-- Header Profile -->
-        <div class="profile-header">
-            <div class="avatar-box">
-                <img src="https://i.imgur.com/8Q9W4Xv.png" alt="CEO Logo" id="userAvatar">
+    <div class="main-card">
+        <!-- Profile Header -->
+        <div class="profile-section">
+            <div class="avatar-container">
+                <img src="https://i.imgur.com/8Q9W4Xv.png" alt="Logo" id="userAvatar">
             </div>
-            <h1 id="userName">ARIFUL-CEO</h1>
+            <h2 id="userName">ARIFUL-CEO</h2>
             <p>Task Income & Crypto Ecosystem</p>
         </div>
 
@@ -300,87 +290,76 @@
             <button class="tab-btn" onclick="switchTab('referral', this)"><i class="fa-solid fa-users"></i> Referral</button>
         </div>
 
-        <!-- Home Section -->
-        <div id="home" class="section active">
-            <div class="stats-card">
-                <h3>Total Balance</h3>
-                <div class="amount" id="totalBalance">$125.50</div>
-            </div>
-            <div class="stats-card">
-                <h3>Completed Tasks</h3>
-                <div class="amount" style="color: #60efff;" id="taskCount">42</div>
-            </div>
-            <button class="action-btn" style="background: linear-gradient(135deg, #00ff87, #60efff); color: #000;" onclick="switchTab('withdraw', null)">Withdraw Funds Now</button>
+        <!-- Home Tab (Like your previous style) -->
+        <div id="home" class="tab-content active">
+            <a href="https://t.me/Task_iincome_BOT" target="_blank" class="link-btn">
+                <i class="fa-solid fa-bolt" style="color: #00ff87;"></i> Start Earning Tasks
+            </a>
+            <a href="https://t.me/YourChannel" target="_blank" class="link-btn">
+                <i class="fa-brands fa-telegram" style="color: #60efff;"></i> Join Official Channel
+            </a>
+            <a href="https://youtube.com" target="_blank" class="link-btn">
+                <i class="fa-brands fa-youtube" style="color: #ff0000;"></i> YouTube Guidelines
+            </a>
+            <button class="primary-btn" onclick="switchTab('withdraw', document.querySelectorAll('.tab-btn')[1])">Withdraw Funds</button>
         </div>
 
-        <!-- Withdraw Section (Binance UID) -->
-        <div id="withdraw" class="section">
-            <div class="stats-card">
-                <h3>Available for Withdraw</h3>
-                <div class="amount" id="withdrawBalance">$125.50</div>
+        <!-- Withdraw Tab (Binance UID System) -->
+        <div id="withdraw" class="tab-content">
+            <div class="stats-box">
+                <h4>Available Balance</h4>
+                <div class="val">$125.50</div>
             </div>
             <div class="input-group">
                 <label>Enter Your Binance UID</label>
-                <div class="input-wrapper">
-                    <i class="fa-brands fa-bitcoin"></i> <!-- Binance Theme Icon -->
+                <div class="input-field-wrapper">
+                    <i class="fa-brands fa-bitcoin"></i>
                     <input type="number" id="binanceUid" placeholder="e.g., 893281027">
                 </div>
             </div>
-            <button class="action-btn" onclick="requestWithdraw()">Submit Withdrawal</button>
+            <button class="primary-btn" style="background: linear-gradient(135deg, #f3ba2f, #ff8c00); color: #000;" onclick="submitWithdraw()">Withdraw via Binance</button>
         </div>
 
-        <!-- Referral Section -->
-        <div id="referral" class="section">
-            <div class="stats-card">
-                <h3>Referral Balance (Admin Controlled)</h3>
-                <div class="amount" id="refBalance">$15.00</div>
+        <!-- Referral Tab -->
+        <div id="referral" class="tab-content">
+            <div class="stats-box">
+                <h4>Referral Balance</h4>
+                <div class="val" id="refBalance">$15.00</div>
             </div>
             <div class="input-group">
                 <label>Your Invite Link</label>
-                <div class="ref-box">
-                    <span id="refLink">https://t.me/Task_iincome_BOT?start=ref12345</span>
-                    <button class="copy-btn" onclick="copyRef()">Copy</button>
+                <div style="background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; font-size: 12px; color: #9ca3af; word-break: break-all; margin-bottom: 10px;" id="refLink">
+                    https://t.me/Task_iincome_BOT?start=ref123
                 </div>
             </div>
+            <button class="primary-btn" onclick="copyRefLink()">Copy Referral Link</button>
         </div>
     </div>
 
     <script>
-        // Tab Switcher Logic
         function switchTab(tabId, btn) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(tb => tb.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
-            if(btn) {
-                btn.classList.add('active');
-            } else {
-                // If triggered via button click, highlight matching tab
-                const tabs = document.querySelectorAll('.tab-btn');
-                if(tabId === 'home') tabs[0].classList.add('active');
-                if(tabId === 'withdraw') tabs[1].classList.add('active');
-                if(tabId === 'referral') tabs[2].classList.add('active');
-            }
+            if(btn) btn.classList.add('active');
         }
 
-        // Withdraw Action
-        function requestWithdraw() {
+        function submitWithdraw() {
             const uid = document.getElementById('binanceUid').value;
             if(!uid || uid.length < 5) {
                 alert('দয়া করে আপনার সঠিক Binance UID লিখুন!');
                 return;
             }
-            alert('উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে! Binance UID: ' + uid);
+            alert('সফল! আপনার উইথড্র রিকোয়েস্ট এবং Binance UID সাবমিট হয়ে গেছে। পেমেন্ট চেক করা হচ্ছে।');
         }
 
-        // Copy Referral Link
-        function copyRef() {
+        function copyRefLink() {
             const link = document.getElementById('refLink').innerText;
             navigator.clipboard.writeText(link);
             alert('রেফারেল লিংক কপি করা হয়েছে!');
         }
 
-        // Telegram WebApp Init
         window.Telegram.WebApp.ready();
         const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
         if(tgUser && tgUser.first_name) {
